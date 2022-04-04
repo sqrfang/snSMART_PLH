@@ -1,0 +1,23 @@
+model{
+  for(i in 1:overall_sample_size) { 
+    #likelihood of stage 1 outcome
+    data_effect_stageI[i]~dnorm(effect_stageI[i],1/(vars^2))
+    #explaining 
+    effect_stageI[i]<-mu[treatment_stageI[i]]
+    #likelihood of stage 2 outcome
+    data_effect_stageII[i]~dnorm(effect_stageII[i],1/(vars^2))
+    #explaining 
+    effect_stageII[i]<- mu[treatment_stageII[i]] + alpha + beta * (data_effect_stageI[i]-mu[treatment_stageI[i]])
+    
+  }
+  
+  #priors
+  vars ~ dgamma(25,1)
+  
+  mu[1]~ dnorm(-75, 0.0016)
+  mu[2]~ dnorm(0, 0.0016)
+  mu[3]~ dnorm(25, 0.0016)
+  
+  alpha~ dnorm(0,0.25)
+  beta ~ dnorm(0,1)
+}
